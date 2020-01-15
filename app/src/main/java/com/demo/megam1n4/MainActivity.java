@@ -7,50 +7,83 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Random;
-
 
 public class MainActivity extends AppCompatActivity
 {
-    int randomNumber;
 
-    public void generateRandomNumber()
+    class Number
     {
-        Random rand = new Random();
+        int number;
 
-        randomNumber = rand.nextInt(20)+1;
+        public boolean isSquare()
+        {
+            double squareRoot = Math.sqrt(number);
+
+            if(squareRoot == Math.floor(squareRoot))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public boolean isTriangular()
+        {
+            int x = 1;
+            int triNumber = 1;
+
+            while (triNumber < number)
+            {
+                x++;
+
+                triNumber += x;
+            }
+
+            if(triNumber == number)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
-    public void guess(View view)
+    public void testNumber(View view)
     {
-        EditText editText = (EditText) findViewById(R.id.editText);
+        Log.i("info", "pressed!");
 
-        int guessValue = Integer.parseInt(editText.getText().toString());
+        EditText editText = (EditText) findViewById(R.id.editText);
 
         String message;
 
-        if(guessValue > randomNumber)
+        if(editText.getText().toString().isEmpty())
         {
-            message = "Lower!";
+            message = "Please Enter a Number You Moron!";
+        }
+        else {
+
+            Number myNumber = new Number();
+
+            myNumber.number = Integer.parseInt(editText.getText().toString());
+
+            if (myNumber.isSquare() && myNumber.isTriangular()) {
+                message = editText.getText().toString() + " is a Square and a Triangular Number! ^_^";
+            } else if (myNumber.isSquare()) {
+                message = editText.getText().toString() + " is a Square Number (Not Triangular)! :]";
+            } else if (myNumber.isTriangular()) {
+                message = editText.getText().toString() + " is a Triangular Number (Not Square)! :|";
+            } else {
+                message = editText.getText().toString() + " is neither a Square nor a Triangular Number! ><!";
+            }
+
         }
 
-        else if(guessValue<randomNumber)
-        {
-            message = "Higher!";
-        }
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 
-        else
-        {
-            message = "You Got It! Try again & again Bitch ><!";
-
-            generateRandomNumber();
-        }
-
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
-        Log.i("Entered Value", editText.getText().toString());
-
-        Log.i("Random Number" , Integer.toString(randomNumber));
     }
 
 
@@ -58,7 +91,5 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        generateRandomNumber();
     }
 }
